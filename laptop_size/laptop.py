@@ -2,19 +2,47 @@
 from sympy import *
 
 # 计算屏幕尺寸长宽(cm)
-sizes = [13.3,14.0,15.6,16.0,17.3]
+sizes = {
+    13.3: "all",
+    # mba 2022
+    13.6: "16/10",
+    14.0: "all",
+    # mbp14
+    14.2: "16/10",
+    # yoga14pros 2022
+    14.5: "16/10",
+    # mbp15
+    15.4: "16/10",
+    15.6: "all",
+    16.0: "all",
+    # y9000x
+    16.1: "16/10",
+    # mbp16 2022
+    16.2: "16/10",
+    17.3: "all",
+}
 
 # 长宽比例
-ratios = [{"key":"16/9", "value":16/9},{"key":"16/10", "value":16/10},{"key":"3/2", "value":3/2} ]
+ratios = {
+    "16/9": [16 / 9],
+    "16/10": [16 / 10],
+    "3/2": [3 / 2],
+    "all": [16 / 9, 16 / 10, 3 / 2],
+}
+ratios_back = {16 / 9: "16/9", 16 / 10: "16/10", 3 / 2: "3/2"}
 
 # 1英寸 = 2.54 cm
 toCm = 2.54
 
 # 开始计算
 for size in sizes:
-    diagonal = size*toCm
-    for ratio in ratios:
-        x = Symbol('x')
-        result = solve(x**2 + (x*ratio["value"])**2 - diagonal**2, x)
+    diagonal = float(size) * toCm
+    for ratio in ratios[sizes[size]]:
+        x = Symbol("x")
+        result = solve(x**2 + (x * ratio) ** 2 - diagonal**2, x)
         width = result[-1]
-        print("{}寸{}笔记本 长为{}cm 宽为{}cm".format(size, ratio["key"], round(width*ratio["value"],2), round(width,2)))
+        print(
+            "{}寸 比例{} 笔记本 长为{}cm 宽为{}cm".format(
+                size, ratios_back[ratio], round(width * ratio, 2), round(width, 2)
+            )
+        )
